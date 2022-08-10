@@ -7,31 +7,31 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.garibyan.armen.tbc_classwork_5.databinding.RvItemChooserBinding
 import com.garibyan.armen.tbc_classwork_5.databinding.RvItemInputBinding
 import com.garibyan.armen.tbc_classwork_5.nodel.network.ViewItem
 
 class ViewItemAdapter : ListAdapter<ViewItem, RecyclerView.ViewHolder>(ItemViewCallBack()) {
 
+    var onChooserItemClick: ((String) -> Unit)? = null
+
     inner class InputViewHolder(private val binding: RvItemInputBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ViewItem) = with(binding) {
-            icon.load(item.icon?.let { "https://icon-library.com/images/image-error-icon/image-error-icon-21.jpg" })
-            edtText.hint = item.hint?.let { it }
-            edtText.inputType = item.keyboard?.let { getInputType(it) }!!
-            tvRequired.visibility = item.required?.let { isVisible(it) }!!
-            root.visibility = item.isActive?.let { isVisible(it) }!!
-//            isActive, rogorc mivxvdi, saertod gvinda es value tu ara, amiton rootis visibility davsete
-//            am shemtxvevashi let arafershi ar gvchirdeba, magram samomavlod dagvchirdeba da davtove
+            //icon.load(item.icon?.let { "https://icon-library.com/images/image-error-icon/image-error-icon-21.jpg" })
+            root.hint = item.hint
+            root.inputType = getInputType(item.keyboard!!)
+            root.visibility = isVisible(item.isActive!!)
         }
     }
 
     inner class ChooserViewHolder(private val binding: RvItemChooserBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ViewItem) = with(binding) {
-            icon.load(item.icon?.let { "https://icon-library.com/images/image-error-icon/image-error-icon-21.jpg" })
-            tvRequired.visibility = item.required?.let { isVisible(it) }!!
+            //icon.load(item.icon?.let { "https://icon-library.com/images/image-error-icon/image-error-icon-21.jpg" })
+            root.text = item.hint
+            root.visibility = isVisible(item.isActive!!)
+            root.setOnClickListener { onChooserItemClick?.invoke(item.hint.toString()) }
         }
     }
 

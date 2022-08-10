@@ -16,20 +16,19 @@ class MainViewModel(
     = Repository(ApiClient.apiService)
 ) : ViewModel() {
 
-    private val _stateFlow =
-        MutableStateFlow<ScreenState<List<ViewItem>>>(ScreenState.Loading)
+    private val _stateFlow = MutableStateFlow<ScreenState<List<ViewItem>>>(ScreenState.Loading)
     val stateFlow = _stateFlow.asStateFlow()
 
     init {
         getData()
     }
 
-    fun getData() {
+    private fun getData() {
         viewModelScope.launch {
             _stateFlow.value = ScreenState.Loading
             val itemList = mutableListOf<ViewItem>()
             repository.getData().collectLatest { response ->
-                if(response.isSuccessful){
+                if(response.isSuccessful && response.body()!!.isNotEmpty()){
                     response.body()!!.forEach {
                             itemList.addAll(it)
                         }
@@ -40,20 +39,4 @@ class MainViewModel(
             }
         }
     }
-
-    fun getData1(){
-        viewModelScope.launch {
-            _stateFlow.value = ScreenState.Loading
-            val itemList = mutableListOf<ViewItem>()
-            if(repository.getData1().isSuccessful){
-                repository.getData1().body()!!.forEach {
-                    itemList.addAll(it)
-                }
-            }else{
-                _stateFlow.value = ScreenState.Error("error")
-            }
-        }
-    }
-
-
 }

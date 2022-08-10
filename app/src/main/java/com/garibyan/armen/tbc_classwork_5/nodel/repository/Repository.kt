@@ -14,6 +14,4 @@ class Repository(private val apiService: ApiService) {
             emit(apiService.getData())
         }.flowOn(Dispatchers.IO)
     }
-
-    suspend fun getData1() = apiService.getData()
 }
